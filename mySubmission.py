@@ -44,13 +44,6 @@ def optimizeRoutes(loads):
                 routes.append(mergedRoute)
 
 
-    for i in range(len(routes)):
-        current_route = routes[i]
-        for j in range(1, len(current_route) - 1):
-            test_route = current_route[:j] + current_route[j+1:]
-            test_route.insert(j, current_route[j])
-            if total_drive_time(test_route, loads) <= 12 * 60:
-                routes[i] = test_route
 
     return routes
 
