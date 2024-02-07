@@ -46,7 +46,7 @@ def optimizeRoutes(loads):
             # Create merged route
             mergedRoute = route1 + route2[::-1]
             # Add merged route to schedule if time to drive
-            if totalDriveTime(mergedRoute, loads) <= 460: 
+            if totalDriveTime(mergedRoute, loads) <= 430: 
                 routes.remove(route1)
                 routes.remove(route2)
                 routes.append(mergedRoute)
