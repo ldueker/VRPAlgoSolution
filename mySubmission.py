@@ -8,40 +8,45 @@ def totalDriveTime(route, loads):
         pickupLocation = loads[route[i]][1]
         dropoffLocation = loads[route[i]][2]
         nextPickupLocation = loads[route[i + 1]][1]
-        #Calculate total time for both of the loa
         totalTime += euclideanDistance((0, 0), pickupLocation) + euclideanDistance(pickupLocation, dropoffLocation) + euclideanDistance(dropoffLocation, nextPickupLocation)
+    # Add the distance from the last dropoff to the depot
+    lastDropoffLocation = loads[route[-1]][2]
+    totalTime += euclideanDistance(lastDropoffLocation, (0, 0))
+
     return totalTime
 
-#Calculates number of minutes to drive between two given points
+
+# Calculates number of minutes to drive between two given points
 def euclideanDistance(p1, p2):
     return math.sqrt((p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2)
+
 
 def optimizeRoutes(loads):
     numLoads = len(loads)
     savings = []
     for i in range(numLoads):
         for j in range(i + 1, numLoads):
-            #creating route-savings groupings
+            # creating route-savings groupings
             saving = totalDriveTime([i, j], loads) - totalDriveTime([i], loads) - totalDriveTime([j], loads)
             savings.append((i, j, saving))
-    
-    #Sorting my routes
+
+    # Sorting my routes
     savings.sort(key=lambda x: x[2], reverse=True)
-    
-    #constructing route number
+
+    # constructing route number
     routes = [[i] for i in range(numLoads)]
-    
-    #Comparing routes to see if routes can be combined
+
+    # Comparing routes to see if routes can be combined
     for i, j, saving in savings:
         route1 = next((r for r in routes if i in r), None)
         route2 = next((r for r in routes if j in r), None)
 
-        #Combine Routes if Possible
+        # Combine Routes if Possible
         if route1 and route2 and route1 != route2:
-            #Create merged route
+            # Create merged route
             mergedRoute = route1 + route2[::-1]
-            #Add merged route to schedule if time to drive
-            if totalDriveTime(mergedRoute, loads) <= 12 * 60:
+            # Add merged route to schedule if time to drive
+            if totalDriveTime(mergedRoute, loads) <= 460: 
                 routes.remove(route1)
                 routes.remove(route2)
                 routes.append(mergedRoute)
@@ -67,9 +72,6 @@ if __name__ == "__main__":
             loads.append((loadNum, pickupLocation, dropoffLocation))
 
     routes = optimizeRoutes(loads)
-    routes = [[n+1 for n in sub] for sub in routes]
+    routes = [[n + 1 for n in sub] for sub in routes]
     for route in routes:
         print(route)
-
-
-
